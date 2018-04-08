@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.view.Menu;
 import android.widget.TextView;
-
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
@@ -17,7 +19,8 @@ import java.util.Scanner;
 // ICS4U1-02
 // */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnSeekBarChangeListener {
+    SeekBar seekBar1;
 
     int num[];
     Button startPauseButton;
@@ -54,17 +57,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            public void restartAlgorithm(){
+            public void restartAlgorithm() {
 
                 restartButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        
+
                     }
                 });
 
             }
-
 
 
             public void accessFiles() {
@@ -123,19 +125,40 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-
-
-
-            public void ChangeSpeed() {
-
-
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
                 seekBarOutput = findViewById(R.id.text_view_seekbar);
                 progressBar = findViewById(R.id.progress_bar);
                 changeSpeedSeekBar = findViewById(R.id.seek_bar);
+                changeSpeedSeekBar.setOnSeekBarChangeListener(this);
+
+
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            public boolean onCreateOptionsMenu(Menu menu) {
+                return true;
+            }
+        });
+
+    }
+    }
+
+
+
+
+
+
 
 
                 //change the speed of the algorithm using the SeekBar
-                changeSpeedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                /*changeSpeedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         progressBar.setProgress(progress);
@@ -158,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
 
 
 
