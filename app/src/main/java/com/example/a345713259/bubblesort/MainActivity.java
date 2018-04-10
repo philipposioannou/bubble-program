@@ -23,6 +23,11 @@ import android.view.View.OnClickListener;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    int seekbarspeed = 1;
+    int step = 1;
+    int max = 10;
+    int min = 1;
     int num[];
     Button startPauseButton;
     TextView textOutput;
@@ -31,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button stepButton;
     Button restartButton;
-
-
 
 
     @Override
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         restartButton = findViewById(R.id.button_reset);
         changeSpeedSeekBar = findViewById(R.id.seek_bar);
 
+
+        changeSpeedSeekBar.setMax((max-min) / step );
+
         changeSpeedSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             int p = 0;
 
@@ -54,11 +60,16 @@ public class MainActivity extends AppCompatActivity {
                 if (p < 30) {
                     p = 30;
                     seekBar.setProgress(p);
+                    double value = min + (p * step);
+
+
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+
+
 
             }
 
@@ -67,14 +78,17 @@ public class MainActivity extends AppCompatActivity {
                 if (p < 30) {
                     p = 30;
                     changeSpeedSeekBar.setProgress(p);
+
+
+
                 }
             }
-    });
+        });
         startPauseButton.setOnClickListener(new View.OnClickListener()
 
         {
             @Override
-            public void onClick (View view){
+            public void onClick(View view) {
                 Thread sortThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -87,70 +101,87 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
+        });
+    }
 
-            });}
-
-
-
-
-            public void accessFiles() {
-                // Accessing the testcase file
-                InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_8);
-                Scanner scanner = new Scanner(dataSetFileInputStream);
-                num = new int[15];
-
-                for (int i = 0; i < num.length; i++) {
-                    num[i] = scanner.nextInt();
-                }
-
-                try {
-                    dataSetFileInputStream.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-            }
+    public void Restart(){
+        restartButton.setOnClickListener(new OnClickListener() {
 
 
-            public void sortAlgorithm() {
-                int n = num.length;
-                int temp = 0;
-                for (int i = 0; i < n; i++) {
-                    for (int j = 1; j < (n - i); j++) {
-                        if (num[j - 1] > num[j]) {
-                            //swap elements
+            @Override
+            public void onClick(View view) {
 
-                            temp = num[j - 1];
-                            num[j - 1] = num[j];
-                            num[j] = temp;
 
-                            //print the results
-                            String result = "";
-                            for (int k = 0; k < num.length; k++) {
-                                result += num[k] + " ";
-                            }
-                            final String Result = result;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    textOutput.setText(Result);
-                                }
-                            });
-
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ie) {
-
-                            }
-
-                        }
-
-                    }
-                }
             }
         });
 
 
-    }}
+
+
+
+
+    }
+
+
+    public void accessFiles() {
+        // Accessing the testcase file
+        InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_8);
+        Scanner scanner = new Scanner(dataSetFileInputStream);
+        num = new int[15];
+
+        for (int i = 0; i < num.length; i++) {
+            num[i] = scanner.nextInt();
+        }
+
+        try {
+            dataSetFileInputStream.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+
+    public void sortAlgorithm() {
+        int n = num.length;
+        int temp = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < (n - i); j++) {
+                if (num[j - 1] > num[j]) {
+                    //swap elements
+
+                    temp = num[j - 1];
+                    num[j - 1] = num[j];
+                    num[j] = temp;
+
+                    //print the results
+                    String result = "";
+                    for (int k = 0; k < num.length; k++) {
+                        result += num[k] + " ";
+                    }
+                    final String Result = result;
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textOutput.setText(Result);
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+
+                    }
+
+                }
+
+            }
+        }
+    }
+}
+
+
 
 
 
@@ -209,4 +240,4 @@ public void restartAlgorithm() {
 
 
 
-
+*/
