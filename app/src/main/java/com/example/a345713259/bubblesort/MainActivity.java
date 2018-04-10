@@ -24,7 +24,7 @@ import android.view.View.OnClickListener;
 public class MainActivity extends AppCompatActivity {
 
 
-    int seekbarspeed = 1;
+    int seekbarspeed;
     int step = 1;
     int max = 10;
     int min = 1;
@@ -56,20 +56,16 @@ public class MainActivity extends AppCompatActivity {
             int p = 0;
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (p < 30) {
-                    p = 30;
-                    seekBar.setProgress(p);
-                    double value = min + (p * step);
-
-
+            public void onProgressChanged(SeekBar seekBar, int p, boolean b) {
+                if (p < 1) {
+                    p = 1;
                 }
+                seekBar.setProgress(p);
+                seekbarspeed = min + (p * step);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
-
 
             }
 
@@ -78,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 if (p < 30) {
                     p = 30;
                     changeSpeedSeekBar.setProgress(p);
-
-
-
                 }
             }
         });
