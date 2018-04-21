@@ -77,9 +77,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        startPauseButton.setOnClickListener(new View.OnClickListener()
 
-        {
+        startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Thread sortThread = new Thread(new Runnable() {
@@ -92,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
                 sortThread.start();
             }
-
-
         });
     }
 
@@ -101,11 +98,18 @@ public class MainActivity extends AppCompatActivity {
     public void Restart(){
         restartButton.setOnClickListener(new OnClickListener() {
 
-
             @Override
             public void onClick(View view) {
+            	// Changes made, thread starts again
+            	Thread sortThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        accessFiles();
+                        sortAlgorithm();
+                    }
+                });
 
-
+                sortThread.start();
             }
         });
     }
@@ -130,6 +134,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void sortAlgorithm() {
+    	boolean step = false;
+
+    	stepButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            	step = true;
+            }
+        });
+
         int n = num.length;
         int temp = 0;
         for (int i = 0; i < n; i++) {
@@ -155,11 +168,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ie) {
+                    // Infinite loop until step pressed
+                    while (!step)
+                    	;
+                    step = false;
 
-                    }
+                    // try {
+                    //     Thread.sleep(1000);
+                    // } catch (InterruptedException ie) {
+
+                    // }
 
                 }
 
