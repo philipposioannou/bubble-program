@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     int max = 10;
     int min = 1;
     int num[];
+    boolean wait;
     Button startPauseButton;
     TextView textOutput;
     TextView seekBarOutput;
@@ -48,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         stepButton = findViewById(R.id.button_step);
         restartButton = findViewById(R.id.button_reset);
         changeSpeedSeekBar = findViewById(R.id.seek_bar);
+
+        //Initialize Restart button
+        Restart();
 
 
         changeSpeedSeekBar.setMax((max-min) / step );
@@ -134,12 +138,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void sortAlgorithm() {
-    	boolean step = false;
 
     	stepButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-            	step = true;
+            	wait = false;
             }
         });
 
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             for (int j = 1; j < (n - i); j++) {
                 if (num[j - 1] > num[j]) {
                     //swap elements
-
+                    wait = true;
                     temp = num[j - 1];
                     num[j - 1] = num[j];
                     num[j] = temp;
@@ -169,9 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     // Infinite loop until step pressed
-                    while (!step)
+                    while (wait)
                     	;
-                    step = false;
 
                     // try {
                     //     Thread.sleep(1000);
