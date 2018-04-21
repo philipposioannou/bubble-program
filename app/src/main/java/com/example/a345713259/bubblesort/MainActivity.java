@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     public void Restart(){
         restartButton.setOnClickListener(new OnClickListener() {
 
@@ -107,12 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-
     }
 
 
@@ -152,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
                         result += num[k] + " ";
                     }
                     final String Result = result;
-
 
                     runOnUiThread(new Runnable() {
                         @Override
