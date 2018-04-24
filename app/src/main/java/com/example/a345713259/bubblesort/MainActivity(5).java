@@ -41,16 +41,17 @@ public class MainActivity extends AppCompatActivity {
                     sortThread = new SortAlgorithm();
                     sortThread.start();
                     accessFiles();
+                } else {
+                    sortThread.togglePaused();
                 }
             }
         });
 
-
-
+        
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                step = true;
+                sortThread.toggleStep();
             }
         });
     }
@@ -75,15 +76,19 @@ public class MainActivity extends AppCompatActivity {
     public class SortAlgorithm extends Thread {
 
         boolean paused = false;
+        boolean step = false;
 
-
+        public void toggleStep() {
+            step = true;
+        }
+        
         public void togglePaused() {
             if (paused)
                 paused = false;
             else
                 paused = true;
-
         }
+        
         @Override
         public void run (){
 
@@ -105,19 +110,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                         final String Result = result;
 
+                        if (paused)
+                            while(!step);
+                        step = false;
+                        
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (paused) {
-                                    try {
-                                        Thread.sleep(2000);
-
-                                    } catch (InterruptedException ie) {
-                                    }
-                                    //while (!step);{
-                                    // step = false;
-
-                                }
                                 textOutput.setText(Result);
                             }
                         });
