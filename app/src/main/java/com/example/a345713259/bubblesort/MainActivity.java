@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         Restart();
 
 
-        changeSpeedSeekBar.setMax((max-min) / step );
+        changeSpeedSeekBar.setMax((max - min) / step);
 
         changeSpeedSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             int p = 0;
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void Restart(){
+    public void Restart() {
         restartButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View view) {
-            	// Changes made, thread starts again
-            	Thread sortThread = new Thread(new Runnable() {
+                // Changes made, thread starts again
+                Thread sortThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         accessFiles();
@@ -118,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     public void accessFiles() {
         // Accessing the testcase file
-        InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_8);
+        InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_4);
         Scanner scanner = new Scanner(dataSetFileInputStream);
         num = new int[15];
 
@@ -136,13 +136,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void sortAlgorithm() {
 
-    	stepButton.setOnClickListener(new OnClickListener() {
+        stepButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-            	wait = false;
+                wait = false;
             }
         });
 
@@ -173,20 +172,22 @@ public class MainActivity extends AppCompatActivity {
 
                     // Infinite loop until step pressed
                     while (wait)
-                    	;
-
-                    // try {
-                    //     Thread.sleep(1000);
-                    // } catch (InterruptedException ie) {
-
-                    // }
-
+                        ;
                 }
-
             }
         }
     }
 }
+
+
+
+/*
+
+try {
+        Thread.sleep(1000);
+        } catch (InterruptedException ie) {
+
+
 
 
 
