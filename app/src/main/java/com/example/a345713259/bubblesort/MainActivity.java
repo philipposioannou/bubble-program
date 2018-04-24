@@ -1,20 +1,16 @@
 package com.example.a345713259.bubblesort;
 
-import android.os.Handler;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.view.Menu;
 import android.widget.TextView;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import android.view.View.OnClickListener;
+
 
 //*
 // Filippos Ioannou
@@ -24,19 +20,10 @@ import android.view.View.OnClickListener;
 public class MainActivity extends AppCompatActivity {
 
 
-    int seekbarspeed;
-    int step = 1;
-    int max = 10;
-    int min = 1;
     int num[];
-    boolean firsttime = true;
-    boolean paused = false;
     boolean wait;
     Button startPauseButton;
     TextView textOutput;
-    TextView seekBarOutput;
-    SeekBar changeSpeedSeekBar;
-    ProgressBar progressBar;
     Button stepButton;
     Button restartButton;
 
@@ -46,92 +33,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         startPauseButton = findViewById(R.id.button_start_pause);
         textOutput = findViewById(R.id.text_output);
         stepButton = findViewById(R.id.button_step);
         restartButton = findViewById(R.id.button_reset);
-        changeSpeedSeekBar = findViewById(R.id.seek_bar);
 
-        //Initialize Restart button
-        Restart();
-
-
-        changeSpeedSeekBar.setMax((max - min) / step);
-
-        changeSpeedSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-            int p = 0;
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int p, boolean b) {
-                if (p < 1) {
-                    p = 1;
-                }
-                seekBar.setProgress(p);
-                seekbarspeed = min + (p * step);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (p < 30) {
-                    p = 30;
-                    changeSpeedSeekBar.setProgress(p);
-                }
-            }
-        });
 
 
         startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            	if (firsttime) {
-            		firstitme = false;
-	                Thread sortThread = new Thread(new Runnable() {
-	                    @Override
-	                    public void run() {
-	                        accessFiles();
-	                        sortAlgorithm();
-	                    }
-	                });
+                accessFiles();
+                sortAlgorithm();
 
-	                sortThread.start();
-	            } else {
-	            	if (pause)
-	            		paused = false;
-	            	else
-	            		paused = true;
-	            }
-        	}
-        });
-    }
-
-
-    public void Restart() {
-        restartButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                // Changes made, thread starts again
-                Thread sortThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                    	paused = false;
-                    	firsttime = false;
-                        accessFiles();
-                        sortAlgorithm();
-                    }
-                });
-
-                sortThread.start();
             }
         });
     }
 
-    public void accessFiles() {
+
+
+    public void accessFiles () {
         // Accessing the testcase file
         InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_4);
         Scanner scanner = new Scanner(dataSetFileInputStream);
@@ -147,15 +69,7 @@ public class MainActivity extends AppCompatActivity {
             ioe.printStackTrace();
         }
     }
-
     public void sortAlgorithm() {
-
-        stepButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                wait = false;
-            }
-        });
 
         int n = num.length;
         int temp = 0;
@@ -182,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    // Infinite loop until step pressed in paused
-                    while (wait && paused)
-                        ;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+
+                    }
                 }
             }
         }
@@ -193,11 +109,59 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+/*if (firsttime) {
+                    firsttime = true;*/
+
+/*} else {
+                    if (paused)
+                        paused = false;
+                    else
+                        paused = true;*/
+/*if (pause == false) {
+                    startPauseButton.setText("Pause");
+                    pause = true;
+                } else {
+                    startPauseButton.setText("Sort");
+                    pause = false;
+public void Restart() {
+    restartButton.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    });
+}
+
+
+
 /*
 
-try {
-        Thread.sleep(1000);
-        } catch (InterruptedException ie) {
+
+
+
+
+/*Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+
+
+                // Changes made, thread starts again
+            }
+        });
+    */
+
+
+
+
+
+
+
+/*stepButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                wait = false;
+            }
+        }); */
 
 
 
@@ -206,18 +170,7 @@ try {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-                //change the speed of the algorithm using the SeekBar
+//change the speed of the algorithm using the SeekBar
                 /*changeSpeedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
