@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     int num[];
     boolean firsttime = true;
+    boolean paused = false;
     Button startPauseButton;
     TextView textOutput;
     Button stepButton;
@@ -41,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     sortThread.start();
+                }
+            } else {
+                if (paused) {
+                    paused = false;
+                } else {
+                    paused = true;
                 }
             }
         });}
