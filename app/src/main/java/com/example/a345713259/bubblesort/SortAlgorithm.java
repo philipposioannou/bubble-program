@@ -1,4 +1,17 @@
 public class SortAlgorithm extends Thread {
+        boolean paused = false;
+        int num[];
+        
+        public togglePaused(){
+           if (paused)
+                paused = false;
+           else
+                paused = true;
+        }
+        
+        public setnum(int temp[]) {
+            num = temp;
+        }
 
 
         @Override
