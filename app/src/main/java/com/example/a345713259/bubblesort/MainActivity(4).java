@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     boolean firsttime = true;
     boolean paused = false;
     boolean step = false;
-    Thread sortThread;
+    SortAlgorithm sortThread;
 
 
     @Override
@@ -38,17 +38,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (firsttime) {
                     firsttime = false;
+                    sortThread = new SortAlgorithm();
+                    sortThread.start();
+                    accessFiles();
+                    sortThread.setnum(num);
+                }
+            }
+        });
 
-                    sortThread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+                            
                             
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 step = true;
-
-
             }
         });
     }
@@ -69,77 +72,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-    }
-
-    public void setoutput(String text){
-
-        textOutput.setText(text);
-    }
-
-    public class SortAlgorithm extends Thread {
-        boolean paused = false;
-        int num[];
-
-        public void togglePaused(){
-            if (paused)
-                paused = false;
-            else
-                paused = true;
-        }
-
-        public void setnum(int temp[]) {
-            num = temp;
-        }
-
-
-        @Override
-        public void run ()
-        {
-            int n = num.length;
-            int temp = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 1; j < (n - i); j++) {
-                    if (num[j - 1] > num[j]) {
-                        //swap elements
-
-                        temp = num[j - 1];
-                        num[j - 1] = num[j];
-                        num[j] = temp;
-
-                        //print the results
-                        String result = "";
-                        for (int k = 0; k < num.length; k++) {
-                            result += num[k] + " ";
-                        }
-                        final String Result = result;
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (paused) {
-                                    try {
-                                        Thread.sleep(2000);
-
-                                    } catch (InterruptedException ie) {
-                                    }
-                                    //while (!step);{
-                                    // step = false;
-
-                                }
-                                textOutput.setText(Result);
-                            }
-                        });
-
-                        try {
-                            Thread.sleep(1000);
-
-                        } catch (InterruptedException ie) {
-
-                        }
-                    }
-                }
-            }
-        }
-
     }
 }
