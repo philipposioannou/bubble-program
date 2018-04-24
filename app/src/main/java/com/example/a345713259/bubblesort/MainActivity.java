@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class MainActivity extends AppCompatActivity {
 
     int num[];
+    boolean firsttime = true;
     Button startPauseButton;
     TextView textOutput;
     Button stepButton;
@@ -29,15 +30,18 @@ public class MainActivity extends AppCompatActivity {
         startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Thread sortThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        accessFiles();
-                        sortAlgorithm();
-                    }
-                });
+                if (firsttime) {
+                    firsttime = false;
+                    Thread sortThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            accessFiles();
+                            sortAlgorithm();
+                        }
+                    });
 
-                sortThread.start();
+                    sortThread.start();
+                }
             }
         });}
     public void accessFiles() {
