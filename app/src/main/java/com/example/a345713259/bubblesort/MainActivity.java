@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     int max = 10;
     int min = 1;
     int num[];
+    boolean firsttime = true;
+    boolean paused = false;
     boolean wait;
     Button startPauseButton;
     TextView textOutput;
@@ -86,16 +88,24 @@ public class MainActivity extends AppCompatActivity {
         startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Thread sortThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        accessFiles();
-                        sortAlgorithm();
-                    }
-                });
+            	if (firsttime) {
+            		firstitme = false;
+	                Thread sortThread = new Thread(new Runnable() {
+	                    @Override
+	                    public void run() {
+	                        accessFiles();
+	                        sortAlgorithm();
+	                    }
+	                });
 
-                sortThread.start();
-            }
+	                sortThread.start();
+	            } else {
+	            	if (pause)
+	            		paused = false;
+	            	else
+	            		paused = true;
+	            }
+        	}
         });
     }
 
@@ -109,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
                 Thread sortThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                    	paused = false;
+                    	firsttime = false;
                         accessFiles();
                         sortAlgorithm();
                     }
@@ -170,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    // Infinite loop until step pressed
-                    while (wait)
+                    // Infinite loop until step pressed in paused
+                    while (wait && paused)
                         ;
                 }
             }
