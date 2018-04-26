@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        
+
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             ioe.printStackTrace();
         }
     }
+
     public class SortAlgorithm extends Thread {
 
         boolean paused = false;
@@ -81,16 +82,16 @@ public class MainActivity extends AppCompatActivity {
         public void toggleStep() {
             step = true;
         }
-        
+
         public void togglePaused() {
             if (paused)
                 paused = false;
             else
                 paused = true;
         }
-        
+
         @Override
-        public void run (){
+        public void run() {
 
             int n = num.length;
             int temp = 0;
@@ -110,30 +111,34 @@ public class MainActivity extends AppCompatActivity {
                         }
                         final String Result = result;
 
-                        if (paused)
-                            while(!step);
-                        step = false;
-                        
+
                         runOnUiThread(new Runnable() {
+
                             @Override
                             public void run() {
-                                textOutput.setText(Result);
+                                if (paused) {
+                                    try {
+                                        Thread.sleep(2000);
+
+                                    } catch (InterruptedException ie) {
+                                    }
+
+                                    textOutput.setText(Result);
+                                }
+
                             }
                         });
-
                         try {
                             Thread.sleep(1000);
 
                         } catch (InterruptedException ie) {
-
                         }
                     }
                 }
             }
         }
-
     }
-
-
 }
+
+
 
