@@ -48,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        stepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sortThread.toggleStep();
-            }
-        });
+//         stepButton.setOnClickListener(new View.OnClickListener() {
+//             @Override
+//             public void onClick(View view) {
+//                 sortThread.toggleStep();
+//             }
+//         });
     }
 
 
