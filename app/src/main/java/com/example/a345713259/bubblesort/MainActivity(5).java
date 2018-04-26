@@ -12,14 +12,17 @@ import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
-    public int num[];
-    Button startPauseButton;
+    
+    //Button objects for the sorting, stepping and pausing
+
     public TextView textOutput;
+    Button startPauseButton;
     Button stepButton;
     Button restartButton;
     boolean firsttime = true;
     boolean paused = false;
     boolean step = false;
+    int num[];
     SortAlgorithm sortThread;
 
 
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         Scanner scanner = new Scanner(dataSetFileInputStream);
         num = new int[15];
 
-        for (int i = 0; i < num.length; i++) {
+        for (int i = 0; i < num.length; i++) {  //initialize the array
             num[i] = scanner.nextInt();
         }
 
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
             ioe.printStackTrace();
         }
     }
+    /**
+     * method called to access the numbers
+     *
+     */
 
     public class SortAlgorithm extends Thread {
 
@@ -84,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 //         }
 
         public void togglePaused() {
+
             if (paused)
                 paused = false;
             else
@@ -91,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void run() {
+        public void run() { // this method is implements the bubble sort algorithm
 
             int n = num.length;
             int temp = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 1; j < (n - i); j++) {
+            for (int i = 0; i < n; i++) { // start the first 'for' loop
+                for (int j = 1; j < (n - i); j++) { //start the seconds 'for' lop
                     if (num[j - 1] > num[j]) {
                         //swap elements
 
@@ -116,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void run() {
+                                /*
+                                    *Slows down the program an additional 2 seconds for each swap when sort button is pressed for the seconds time
+
+
+                                 */
                                 if (paused) {
                                     try {
                                         Thread.sleep(2000);
@@ -126,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                 textOutput.setText(Result);
                             }
                         });
-                        try {
+                        try {   //Takes one second for each swap, as a result the UI shows a progression and not a flash.
                             Thread.sleep(1000);
 
                         } catch (InterruptedException ie) {
