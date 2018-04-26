@@ -77,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
     public class SortAlgorithm extends Thread {
 
         boolean paused = false;
-        boolean step = false;
+//         boolean step = false;
 
-        public void toggleStep() {
-            step = true;
-        }
+//         public void toggleStep() {
+//             step = true;
+//         }
 
         public void togglePaused() {
             if (paused)
@@ -122,10 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
                                     } catch (InterruptedException ie) {
                                     }
-
-                                    textOutput.setText(Result);
                                 }
-
+                                textOutput.setText(Result);
                             }
                         });
                         try {
