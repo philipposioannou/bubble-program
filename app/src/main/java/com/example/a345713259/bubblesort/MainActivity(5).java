@@ -10,29 +10,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityInterface {
 
-    
-    //Button objects for the sorting, stepping and pausing
+//Button objects for the sorting, stepping and pausing
 
     public TextView textOutput;
     Button startPauseButton;
     Button stepButton;
     Button restartButton;
     boolean firsttime = true;
-    boolean paused = false;
-    boolean step = false;
     int num[];
     SortAlgorithm sortThread;
+    ButtonController buttonController = new ButtonController();
+    String result = "";
 
+
+    @Override
+    public void changeFirsttime() {
+        if (firsttime) {
+            firsttime = false;
+        } else {
+            firsttime = true;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        restartButton = findViewById(R.id.button_reset);
         stepButton = findViewById(R.id.button_step);
-        startPauseButton = findViewById(R.id.button_start_pause);
+        startPauseButton = findViewById(R.id.button_start);
         textOutput = findViewById(R.id.text_output);
 
 
@@ -41,24 +50,45 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (firsttime) {
                     firsttime = false;
+                    accessFiles();
+//                    buttonController.firsttimestartPauseButtonClick();
                     sortThread = new SortAlgorithm();
                     sortThread.start();
-                    accessFiles();
+                    startPauseButton.setText("pause");
+                    stepButton.setEnabled(false);
                 } else {
+                    startPauseButton.setText("sort");
                     sortThread.togglePaused();
+                    stepButton.setEnabled(true);
                 }
             }
         });
 
 
-//         stepButton.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View view) {
-//                 sortThread.toggleStep();
-//             }
-//         });
-    }
+        stepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortThread.toggleStep();
+            }
+        });
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortThread.interrupt();
+                sortThread = new SortAlgorithm();
+                accessFiles();
+                startPauseButton.setText("sort");
+                firsttime = true;
+                final String Result = result;
+                textOutput.setText(result);
+//                 sortThread.join();
+//                 sortThread.start();
 
+            }
+        });
+
+
+    }
 
     public void accessFiles() {
         // Accessing the testcase file
@@ -75,26 +105,51 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        result = "";
+        for (int k = 0; k < num.length; k++) {
+            result += num[k] + " ";
+        }
     }
+
+
     /**
      * method called to access the numbers
-     *
      */
-
     public class SortAlgorithm extends Thread {
 
-        boolean paused = false;
-//         boolean step = false;
+        volatile boolean paused = false;
+        volatile boolean stepWanted = false;
 
-//         public void toggleStep() {
-//             step = true;
-//         }
+        public void accessFiles() {
+            // Accessing the testcase file
+            InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_4);
+            Scanner scanner = new Scanner(dataSetFileInputStream);
+            num = new int[15];
+
+            for (int i = 0; i < num.length; i++) {  //initialize the array
+                num[i] = scanner.nextInt();
+            }
+
+            try {
+                dataSetFileInputStream.close();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+            for (int k = 0; k < num.length; k++) {
+                result += num[k] + " ";
+            }
+        }
+
+        public void toggleStep() {
+            stepWanted = true;
+        }
 
         public void togglePaused() {
 
-            if (paused)
+            if (paused) {
                 paused = false;
-            else
+            } else
                 paused = true;
         }
 
@@ -120,36 +175,46 @@ public class MainActivity extends AppCompatActivity {
                         final String Result = result;
 
 
+                        while (paused) {
+                            if (stepWanted) {
+                                stepWanted = false;
+                                break;
+                            }
+                        }
+
+                        try {   //Takes one second for each swap, as a result the UI shows a progression and not a flash.
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie) {
+                            System.out.println("interrupted");
+                            return;
+                        }
                         runOnUiThread(new Runnable() {
 
                             @Override
                             public void run() {
                                 /*
                                     *Slows down the program an additional 2 seconds for each swap when sort button is pressed for the seconds time
-
-
                                  */
-                                if (paused) {
-                                    try {
-                                        Thread.sleep(2000);
 
-                                    } catch (InterruptedException ie) {
-                                    }
-                                }
+//                                if (paused) {
+//                                    try {
+//                                        Thread.sleep(2000);
+//
+//                                    } catch (InterruptedException ie) {
+//                                    }
+//                                }
                                 textOutput.setText(Result);
                             }
                         });
-                        try {   //Takes one second for each swap, as a result the UI shows a progression and not a flash.
-                            Thread.sleep(1000);
 
-                        } catch (InterruptedException ie) {
-                        }
                     }
                 }
             }
         }
     }
 }
+
+
 
 
 
