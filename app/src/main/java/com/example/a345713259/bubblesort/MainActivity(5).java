@@ -1,14 +1,18 @@
 package com.example.fikil.finalbubblesort;
 
+/*      Name: Filippos Ioannou
+        Assignment: Bubble Sort Algorithm
+        Course Code:ICS4U1-02
+        Date:02/05/2018
+        */
+
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements MainActivityInterface {
 
@@ -17,48 +21,40 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
     public TextView textOutput;
     Button startPauseButton;
     Button stepButton;
-    Button restartButton;
+    Button resetButton;
     boolean firsttime = true;
-    int num[];
-    SortAlgorithm sortThread;
     ButtonController buttonController = new ButtonController();
-    String result = "";
+    Context context = this;
 
-
-    @Override
-    public void changeFirsttime() {
-        if (firsttime) {
-            firsttime = false;
-        } else {
-            firsttime = true;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        restartButton = findViewById(R.id.button_reset);
+        resetButton = findViewById(R.id.button_reset);
         stepButton = findViewById(R.id.button_step);
         startPauseButton = findViewById(R.id.button_start);
         textOutput = findViewById(R.id.text_output);
 
+        buttonController.setMainActivity(this);
 
         startPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*if sort is pressed for the first time since starting the app or since pressing the reset button,
+                *the text changes to "pause" and the step button becomes disabled
+                *otherwise the text reads sort and the step button becomes enables
+                *see button controller class for algorithm related functions
+                */
                 if (firsttime) {
                     firsttime = false;
-                    accessFiles();
-//                    buttonController.firsttimestartPauseButtonClick();
-                    sortThread = new SortAlgorithm();
-                    sortThread.start();
+                    buttonController.firsttimestartPauseButtonClick(context);
                     startPauseButton.setText("pause");
                     stepButton.setEnabled(false);
                 } else {
                     startPauseButton.setText("sort");
-                    sortThread.togglePaused();
+                    buttonController.notFirsttimestartPauseButtonClick();
                     stepButton.setEnabled(true);
                 }
             }
@@ -68,21 +64,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortThread.toggleStep();
+                buttonController.stepButtonOnClick();
             }
         });
-        restartButton.setOnClickListener(new View.OnClickListener() {
+        resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortThread.interrupt();
-                sortThread = new SortAlgorithm();
-                accessFiles();
+                /*reset the textOutput to initial values, changes the StartPauseButton to read "sort"
+                * and change firsttime to true
+                * see button controller class for algorithm related functions
+                * */
+
+                buttonController.resetButtonOnClick(context);
                 startPauseButton.setText("sort");
                 firsttime = true;
-                final String Result = result;
-                textOutput.setText(result);
-//                 sortThread.join();
-//                 sortThread.start();
+                textOutput.setText(buttonController.sortThread.result);
 
             }
         });
@@ -90,131 +86,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityInter
 
     }
 
-    public void accessFiles() {
-        // Accessing the testcase file
-        InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_4);
-        Scanner scanner = new Scanner(dataSetFileInputStream);
-        num = new int[15];
+    public void update(final String Result) {
+        runOnUiThread(new Runnable() {
 
-        for (int i = 0; i < num.length; i++) {  //initialize the array
-            num[i] = scanner.nextInt();
-        }
-
-        try {
-            dataSetFileInputStream.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        result = "";
-        for (int k = 0; k < num.length; k++) {
-            result += num[k] + " ";
-        }
+            @Override
+            public void run() {
+                textOutput.setText(Result);
+            }
+        });
     }
 
-
-    /**
-     * method called to access the numbers
-     */
-    public class SortAlgorithm extends Thread {
-
-        volatile boolean paused = false;
-        volatile boolean stepWanted = false;
-
-        public void accessFiles() {
-            // Accessing the testcase file
-            InputStream dataSetFileInputStream = getResources().openRawResource(R.raw.test_case_4);
-            Scanner scanner = new Scanner(dataSetFileInputStream);
-            num = new int[15];
-
-            for (int i = 0; i < num.length; i++) {  //initialize the array
-                num[i] = scanner.nextInt();
-            }
-
-            try {
-                dataSetFileInputStream.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-
-            for (int k = 0; k < num.length; k++) {
-                result += num[k] + " ";
-            }
-        }
-
-        public void toggleStep() {
-            stepWanted = true;
-        }
-
-        public void togglePaused() {
-
-            if (paused) {
-                paused = false;
-            } else
-                paused = true;
-        }
-
-        @Override
-        public void run() { // this method is implements the bubble sort algorithm
-
-            int n = num.length;
-            int temp = 0;
-            for (int i = 0; i < n; i++) { // start the first 'for' loop
-                for (int j = 1; j < (n - i); j++) { //start the seconds 'for' lop
-                    if (num[j - 1] > num[j]) {
-                        //swap elements
-
-                        temp = num[j - 1];
-                        num[j - 1] = num[j];
-                        num[j] = temp;
-
-                        //print the results
-                        String result = "";
-                        for (int k = 0; k < num.length; k++) {
-                            result += num[k] + " ";
-                        }
-                        final String Result = result;
-
-
-                        while (paused) {
-                            if (stepWanted) {
-                                stepWanted = false;
-                                break;
-                            }
-                        }
-
-                        try {   //Takes one second for each swap, as a result the UI shows a progression and not a flash.
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ie) {
-                            System.out.println("interrupted");
-                            return;
-                        }
-                        runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                /*
-                                    *Slows down the program an additional 2 seconds for each swap when sort button is pressed for the seconds time
-                                 */
-
-//                                if (paused) {
-//                                    try {
-//                                        Thread.sleep(2000);
-//
-//                                    } catch (InterruptedException ie) {
-//                                    }
-//                                }
-                                textOutput.setText(Result);
-                            }
-                        });
-
-                    }
-                }
-            }
-        }
-    }
 }
-
-
-
-
-
