@@ -1,67 +1,100 @@
+package com.example.fikil.finalbubblesort;
+
+import android.content.Context;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
+
+/**
+ * Created by fikil on 2018-04-30.
+ */
+
 public class SortAlgorithm extends Thread {
-        boolean paused = false;
-        int num[];
-        
-        public togglePaused(){
-           if (paused)
-                paused = false;
-           else
-                paused = true;
+
+    volatile boolean paused = false;
+    volatile boolean stepWanted = false;
+    int[] num = new int[15];
+    String result = "";
+    ButtonControllerInterface buttonController;
+
+    public void setButtonController(ButtonControllerInterface ButtonController) {
+        buttonController = ButtonController;
+    }
+
+    public String accessFiles(Context context) {
+        // Accessing the testcase file
+        InputStream dataSetFileInputStream = context.getResources().openRawResource(R.raw.test_case_4);
+        Scanner scanner = new Scanner(dataSetFileInputStream);
+
+        for (int i = 0; i < num.length; i++) {  //initialize the array
+            num[i] = scanner.nextInt();
         }
-        
-        public setnum(int temp[]) {
-            num = temp;
+
+        try {
+            dataSetFileInputStream.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
 
+        for (int k = 0; k < num.length; k++) {
+            result += num[k] + " ";
+        }
 
-        @Override
-        public void run ()
-        {
-            int n = num.length;
-            int temp = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 1; j < (n - i); j++) {
-                    if (num[j - 1] > num[j]) {
-                        //swap elements
+        return result;
+    }
 
-                        temp = num[j - 1];
-                        num[j - 1] = num[j];
-                        num[j] = temp;
+    public void toggleStep() {
+        stepWanted = true;
+    }
 
-                        //print the results
-                        String result = "";
-                        for (int k = 0; k < num.length; k++) {
-                            result += num[k] + " ";
-                        }
-                        final String Result = result;
+    public void togglePaused() {
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (paused) {
-                                    try {
-                                        Thread.sleep(2000);
+        if (paused) {
+            paused = false;
+        } else
+            paused = true;
+    }
 
-                                    } catch (InterruptedException ie) {
-                                    }
-                                    //while (!step);{
-                                    // step = false;
+    @Override
+    public void run() { // this method is implements the bubble sort algorithm
 
-                                }
-                                textOutput.setText(Result);
-                            }
-                        });
+        int n = num.length;
+        int temp = 0;
+        for (int i = 0; i < n; i++) { // start the first 'for' loop
+            for (int j = 1; j < (n - i); j++) { //start the seconds 'for' loop
+                if (num[j - 1] > num[j]) {
+                    //swap elements
 
-                        try {
-                            Thread.sleep(1000);
+                    temp = num[j - 1];
+                    num[j - 1] = num[j];
+                    num[j] = temp;
 
-                        } catch (InterruptedException ie) {
+                    //print the results
+                    String result = "";
+                    for (int k = 0; k < num.length; k++) {
+                        result += num[k] + " ";
+                    }
 
+
+                    while (paused) {
+                        if (stepWanted) {
+                            stepWanted = false;
+                            break;
                         }
                     }
+
+                    try {   //Takes one second for each swap, as a result the UI shows a progression and not a flash.
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ie) {
+                        return;
+                    }
+                    buttonController.update(result);
+
                 }
             }
         }
-
     }
 }
+
+
